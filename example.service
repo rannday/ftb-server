@@ -1,0 +1,18 @@
+[Unit]
+Description=FTB Skies Service
+After=local-fs.target network.target
+
+[Service]
+Type=forking
+Restart=on-failure
+User=minecraft
+Group=minecraft
+WorkingDirectory=/srv/minecraft/ftb_skies
+ExecStart=/usr/bin/tmux -L minecraft new-session -s ftb-skies -d '/usr/bin/bash /srv/minecraft/ftb_skies/start.sh'
+ExecStop=/usr/bin/tmux -L minecraft send-keys -t ftb-skies 'say SERVER SHUTTING DOWN IN 10 SECONDS!' ENTER
+ExecStop=/usr/bin/sleep 10
+ExecStop=/usr/bin/tmux -L minecraft send-keys -t ftb-skies 'save-all' ENTER
+ExecStop=/usr/bin/tmux -L minecraft send-keys -t ftb-skies 'stop' ENTER
+
+[Install]
+WantedBy=multi-user.target
